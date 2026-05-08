@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { Attendance } from '../../attendance/entities/attendance.entity';
 import { Group } from '../../groups/entities/group.entity';
-import { Payment } from '../../payments/entities/payment.entity'; // IMPORT QILISH
+import { Payment } from '../../payments/entities/payment.entity';
 
 @Entity('students')
 export class Student extends BaseEntity {
@@ -29,7 +29,7 @@ export class Student extends BaseEntity {
 
   @ApiProperty({ description: '3x4 rasm uchun URL', nullable: true })
   @Column({ nullable: true })
-  photo!: string;
+  photo?: string;
 
   @ApiProperty({ example: 0 })
   @Column({
@@ -44,8 +44,14 @@ export class Student extends BaseEntity {
   })
   balance!: number;
 
-  @ManyToOne(() => Group, (group) => group.students, { onDelete: 'SET NULL' })
-  group!: Group;
+  // TUZATISH: groupId nullable bo'lishi kerak (guruhsiz o'quvchi bo'lishi mumkin)
+  @ApiProperty({ example: 'uuid-group-id', nullable: true })
+  @Column({ name: 'groupId', nullable: true })
+  groupId?: string;
+
+  @ManyToOne(() => Group, (group) => group.students, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'groupId' })
+  group?: Group;
 
   @OneToMany(() => Payment, (payment) => payment.student)
   payments!: Payment[];

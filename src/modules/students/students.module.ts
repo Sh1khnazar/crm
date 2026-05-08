@@ -6,7 +6,7 @@ import { StudentsController } from './students.controller';
 import { StudentsService } from './students.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Student, Group])], // Ikkala entity ham kerak
+  imports: [TypeOrmModule.forFeature([Student, Group])],
   controllers: [StudentsController],
   providers: [StudentsService],
 })

@@ -22,11 +22,10 @@ export class PaymentsService {
     });
     if (!student) throw new NotFoundException("O'quvchi topilmadi");
 
-    // Balansni oshiramiz
-    student.balance += amount;
+    // TUZATISH: Number() bilan explicit cast (decimal column string qaytarishi mumkin)
+    student.balance = Number(student.balance) + Number(amount);
     await this.studentRepo.save(student);
 
-    // INCOME (Kirim) sifatida tarixga yozamiz
     const payment = this.paymentRepo.create({
       amount,
       type: PaymentType.INCOME,

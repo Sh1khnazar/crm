@@ -1,77 +1,259 @@
-# 🚀 CRM System - Najot Ta'lim 7-Month Final Project
+# 🏫 CRM — Najot Ta'lim O'quv Markazi Boshqaruv Tizimi
 
-Ushbu loyiha o'quv markazlari faoliyatini avtomatlashtirish va moliyaviy hisob-kitoblarni shaffof yuritish uchun mo'ljallangan backend tizimidir. Tizimning o'ziga xosligi — o'quvchilar balansi darsga kelgan-kelmaganligiga qarab real vaqt rejimida (Dynamic Billing) hisoblanishidadir.
+O'quv markazini to'liq boshqarish uchun yaratilgan **NestJS** asosidagi REST API. Talabalar, guruhlar, davomat, to'lovlar va murojaatlarni boshqarish imkonini beradi.
 
-## 🌟 Asosiy Imkoniyatlar
+---
 
-- **Dashboard Analytics:** Figma dizayni asosida yaratilgan tahliliy bo'lim. Jami o'quvchilar, yangi murojaatlar va bugungi kirim ko'rsatkichlari.
-- **Financial Billing:** To'lovlar tarixi va davomat asosida avtomatik balans yechilishi.
-- **Group & Student Management:** Guruhlar, o'qituvchilar va o'quvchilarning o'zaro bog'liqligini boshqarish.
-- **Leads Control:** Yangi kelgan murojaatlarni (leads) kuzatish va ularni o'quvchiga aylantirish tizimi.
-- **Automated Migrations:** Ma'lumotlar bazasi sxemasini TypeORM migratsiyalari orqali xavfsiz boshqarish.
-- **Validation & Security:** Kiruvchi ma'lumotlarni qat'iy tekshirish va CORS sozlamalari.
+## 🚀 Texnologiyalar
 
-## 🛠 Texnologiyalar
+- **NestJS** — asosiy framework
+- **TypeORM** — ORM (PostgreSQL bilan)
+- **PostgreSQL** — ma'lumotlar bazasi
+- **JWT** — autentifikatsiya
+- **Swagger** — API hujjatlari
+- **bcrypt** — parolni shifrlash
 
-- **Backend:** NestJS (TypeScript)
-- **Database:** PostgreSQL
-- **ORM:** TypeORM
-- **API Documentation:** Swagger UI
-- **Environment:** Fedora Linux (Acer Nitro ANV15-51)
+---
 
-## 📂 Loyiha Strukturasi
+## 📁 Loyiha Tuzilmasi
 
-```text
+```
 src/
-├── common/          # Global entity, base-entity va util-lar
-├── config/          # TypeORM va DB konfiguratsiyasi
-├── database/        # Migrations (InitialSchema)
-├── modules/         # Biznes mantiq (Analytics, Attendance, Groups, Leads, Payments, Students)
-├── main.ts          # Serverning kirish nuqtasi va global sozlamalar
-└── app.module.ts    # Root modul
+├── common/
+│   ├── decorators/       # @Roles decorator
+│   ├── entities/         # BaseEntity
+│   ├── enums/            # UserRole enum
+│   └── guards/           # JwtAuthGuard, RolesGuard
+├── config/               # TypeORM konfiguratsiyasi
+├── database/
+│   ├── migrations/       # DB migratsiyalar
+│   └── seeds/            # Boshlang'ich ma'lumotlar
+└── modules/
+    ├── auth/             # Login, JWT
+    ├── users/            # Foydalanuvchilar (Admin, O'qituvchi)
+    ├── students/         # O'quvchilar
+    ├── groups/           # Guruhlar
+    ├── attendance/       # Davomat
+    ├── payments/         # To'lovlar
+    ├── leads/            # Murojaatlar
+    └── analytics/        # Statistika
 ```
 
-⚙️ O'rnatish va Ishga Tushirish
-Repozitoriyani klon qiling:
+---
 
-Bash
-git clone [https://github.com/Sotimov-Shikh/crm-backend.git](https://github.com/Sotimov-Shikh/crm-backend.git)
+## ⚙️ O'rnatish
+
+### 1. Talablar
+
+- Node.js >= 18
+- PostgreSQL >= 14
+- npm
+
+### 2. Loyihani klonlash
+
+```bash
+git clone https://github.com/username/crm.git
 cd crm
-Kutubxonalarni o'rnating:
+```
 
-Bash
+### 3. Paketlarni o'rnatish
+
+```bash
 npm install
-.env faylini sozlang:
-Loyiha ildizida .env faylini yarating va quyidagi ma'lumotlarni kiriting:
+```
 
-Code snippet
+### 4. `.env` faylini sozlash
+
+```bash
+cp .env.example .env
+```
+
+`.env` faylini tahrirlang:
+
+```env
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=postgres
-DB_PASSWORD=sizning_parolingiz
-DB_NAME=crm_db
-PORT=3000
-Ma'lumotlar bazasini qurish (Migrations):
+DB_PASSWORD=your_password
+DB_NAME=crm
 
-Bash
-npx typeorm-ts-node-commonjs migration:run -d src/config/typeorm.config.ts
-Serverni yurgizish:
+JWT_SECRET_KEY=your_secret_key
+JWT_EXPIRES_IN=24h
+```
 
-Bash
+### 5. Ma'lumotlar bazasini yaratish
+
+```bash
+psql -U postgres -c "CREATE DATABASE crm;"
+```
+
+### 6. Migratsiyalarni ishga tushirish
+
+```bash
+npm run build
+npx typeorm migration:run -d dist/config/typeorm.config.js
+```
+
+### 7. Serverni ishga tushirish
+
+```bash
+# Development
 npm run start:dev
-📖 API Hujjatlari (Swagger)
-Server ishga tushgandan so'ng barcha API endpointlarni test qilish uchun:
-🔗 URL: http://localhost:3000/api/docs
 
-👨‍💻 Muallif Haqida
-Sotimov Shixnazar Mustafoyevich
+# Production
+npm run start:prod
+```
 
-🎓 Najot Ta'lim & A+ Academy bitiruvchisi.
+---
 
-💻 Full-stack Developer (Node.js, TypeScript, React, Next.js).
+## 📖 API Hujjatlari
 
-🐧 Fedora Linux ishqibozi (Development Fedora muhitida olib borilgan).
+Server ishga tushgach Swagger hujjatlarini oching:
 
-📈 Financial Markets Trader (Nasdaq 100 va S&P 500 futures trading tajribasiga ega).
+```
+http://localhost:3000/api/docs
+```
 
-Loyiha professional portfolio va o'quv markazlari boshqaruvini osonlashtirish maqsadida ishlab chiqildi.
+---
+
+## 🔐 Autentifikatsiya
+
+Tizimda **3 xil rol** mavjud:
+
+| Rol          | Huquqlar                                           |
+| ------------ | -------------------------------------------------- |
+| `superadmin` | Barcha amallar                                     |
+| `admin`      | Boshqaruv (o'chirish bundan tashqari)              |
+| `teacher`    | Faqat o'z guruhlarini ko'rish va davomat belgilash |
+
+### Login
+
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "phone": "+998901234567",
+  "password": "your_password"
+}
+```
+
+Response:
+
+```json
+{
+  "access_token": "eyJhbGci...",
+  "user": {
+    "id": "uuid",
+    "full_name": "Ism Familiya",
+    "role": "superadmin"
+  }
+}
+```
+
+Tokenni Swagger da **Authorize** tugmasi orqali kiriting.
+
+---
+
+## 📡 Endpointlar
+
+### Auth
+
+| Method | URL               | Tavsif         |
+| ------ | ----------------- | -------------- |
+| POST   | `/api/auth/login` | Tizimga kirish |
+
+### Users
+
+| Method | URL              | Tavsif              | Rol               |
+| ------ | ---------------- | ------------------- | ----------------- |
+| POST   | `/api/users`     | Yangi user yaratish | superadmin        |
+| GET    | `/api/users`     | Barcha userlar      | superadmin, admin |
+| GET    | `/api/users/:id` | Bitta user          | superadmin, admin |
+| DELETE | `/api/users/:id` | Userni o'chirish    | superadmin        |
+
+### Students
+
+| Method | URL                 | Tavsif             | Rol      |
+| ------ | ------------------- | ------------------ | -------- |
+| POST   | `/api/students`     | Yangi o'quvchi     | admin+   |
+| GET    | `/api/students`     | Barcha o'quvchilar | teacher+ |
+| GET    | `/api/students/:id` | Bitta o'quvchi     | teacher+ |
+| PATCH  | `/api/students/:id` | Tahrirlash         | admin+   |
+| DELETE | `/api/students/:id` | O'chirish          | admin+   |
+
+### Groups
+
+| Method | URL                     | Tavsif          | Rol        |
+| ------ | ----------------------- | --------------- | ---------- |
+| POST   | `/api/groups`           | Yangi guruh     | admin+     |
+| GET    | `/api/groups`           | Barcha guruhlar | admin+     |
+| GET    | `/api/groups/my-groups` | O'z guruhlari   | teacher    |
+| GET    | `/api/groups/:id`       | Bitta guruh     | teacher+   |
+| PATCH  | `/api/groups/:id`       | Tahrirlash      | admin+     |
+| DELETE | `/api/groups/:id`       | O'chirish       | superadmin |
+
+### Attendance
+
+| Method | URL                         | Tavsif            | Rol      |
+| ------ | --------------------------- | ----------------- | -------- |
+| POST   | `/api/attendance`           | Davomat belgilash | teacher+ |
+| GET    | `/api/attendance/group/:id` | Guruh davomati    | teacher+ |
+
+### Payments
+
+| Method | URL                         | Tavsif            | Rol      |
+| ------ | --------------------------- | ----------------- | -------- |
+| POST   | `/api/payments/top-up`      | Balans to'ldirish | admin+   |
+| GET    | `/api/payments/student/:id` | To'lovlar tarixi  | teacher+ |
+
+### Leads
+
+| Method | URL              | Tavsif             | Rol    |
+| ------ | ---------------- | ------------------ | ------ |
+| POST   | `/api/leads`     | Yangi murojaat     | admin+ |
+| GET    | `/api/leads`     | Barcha murojaatlar | admin+ |
+| GET    | `/api/leads/:id` | Bitta murojaat     | admin+ |
+| PATCH  | `/api/leads/:id` | Holat yangilash    | admin+ |
+| DELETE | `/api/leads/:id` | O'chirish          | admin+ |
+
+### Analytics
+
+| Method | URL                            | Tavsif               | Rol    |
+| ------ | ------------------------------ | -------------------- | ------ |
+| GET    | `/api/analytics/dashboard`     | Dashboard statistika | admin+ |
+| GET    | `/api/analytics/monthly-chart` | Oylik grafik         | admin+ |
+
+---
+
+## 💰 Moliyaviy Mantiq
+
+- O'quvchi **kelganda** (`is_present: true`) → balansdan `lesson_price` yechildi
+- O'quvchi **kelmasa** (`is_present: false`) → balans o'zgarmaydi
+- Balans **-200,000 so'mdan** kam bo'lsa davomat belgilanmaydi
+- Barcha tranzaksiyalar `payments` jadvalida saqlanadi
+
+---
+
+## 🛠️ Foydali Komandalar
+
+```bash
+# Yangi migration yaratish
+npx typeorm migration:generate -d src/config/typeorm.config.ts src/database/migrations/MigrationNomi
+
+# Migratsiyani bekor qilish
+npx typeorm migration:revert -d dist/config/typeorm.config.js
+
+# Lint tekshirish
+npm run lint
+
+# Build
+npm run build
+```
+
+---
+
+## 👤 Muallif
+
+**Sotimov Shixnazar**
+Najot Ta'lim — 7-oy loyihasi

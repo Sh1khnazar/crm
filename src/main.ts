@@ -6,31 +6,38 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 1. Global Prefiks (Hamma yo'llar /api bilan boshlanadi)
+  // 1. Global Prefiks
   app.setGlobalPrefix('api');
 
-  // 2. Global Validation Pipe (DTO-larni tekshirish uchun)
+  // 2. Global Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // DTO-da yo'q maydonlarni o'chirib tashlaydi
-      forbidNonWhitelisted: true, // DTO-da yo'q maydon yuborilsa xato qaytaradi
-      transform: true, // Kelgan ma'lumotni avtomatik DTO turiga o'giradi
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
-  // 3. Swagger Sozlamalari
+  // 3. Swagger Sozlamalari (JWT Bearer auth qo'shildi)
   const config = new DocumentBuilder()
     .setTitle("CRM Najot Ta'lim")
     .setDescription("O'quv markazini boshqarish tizimi API hujjatlari")
     .setVersion('1.0')
+    .addBearerAuth()
+    .addTag('Auth')
+    .addTag('Users')
     .addTag('Students')
     .addTag('Groups')
+    .addTag('Attendance')
+    .addTag('Payments')
+    .addTag('Leads')
+    .addTag('Analytics')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  // 4. CORS Sozlamalari (Frontend ulanishi uchun)
+  // 4. CORS Sozlamalari
   app.enableCors();
 
   const PORT = process.env.PORT || 3000;
